@@ -2,6 +2,7 @@
 
 int main() {
     int num;
+    int i;
 
     printf("ใส่เลข: ");    // รับค่าจำนวนรอบจากผู้ใช้
     if (scanf("%d", &num) != 1) {
@@ -14,7 +15,7 @@ int main() {
         return 1;
     }
 
-    for (int i = 1; i <= num; i++) {
+    for (i = 1; i <= num; i++) {
         printf("[%d] Hello world\n", i);// วนลูปแสดงผล
     }
 
