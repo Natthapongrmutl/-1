@@ -2,8 +2,10 @@
 
 int main() {
     int num;
+    int i;
+    
     scanf("%d", &num);
-    for (int i = 1; i <= num; i++) {
+    for (i = 1; i <= num; i++) {
         printf("[%d] Hello world\n", i);
     }
 
