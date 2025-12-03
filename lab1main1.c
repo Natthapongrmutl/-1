@@ -1,12 +1,11 @@
 #include <stdio.h>
 
 int main(){
-    int number888;
-    printf("ใส่เลข: ");
-    if(scanf("%d", &number888) != 1){
+    int num;
+    if(scanf("%d", &num) != 1){
         return 1;
     }
-    for(int i = 1; i <= number888; i++){
+    for(int i = 1; i <= num; i++){
         printf("[%d] Hello world\n", i);
     }
     
