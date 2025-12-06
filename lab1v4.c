@@ -1,26 +1,26 @@
 #include <stdio.h>
 
 int GetSet(int arr[]){
-    int n;
+    int number;
 
         printf("enter number: ");
-        scanf("%d",&n);
+        scanf("%d",&number);
 
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < number; i++)
     {
         printf("enter element %d : ",i + 1);
         scanf("%d", &arr[i]);
     }
-    return n;
+    return number;
 }
 
 int main(){
     int data[100];
-    int num;
+    int numbervalue;
 
-    num = GetSet(data);
+    numbervalue = GetSet(data);
     printf("\nYour number: \n");
-    for (int i = 0; i < num; i++)
+    for (int i = 0; i < numbervalue; i++)
     {
         printf("%d ", data[i]);
     }
