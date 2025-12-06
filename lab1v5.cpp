@@ -1,29 +1,38 @@
 #include <stdio.h>
 
+// ฟังก์ชันสำหรับรับค่าเมทริกจากผู้ใช้
 void GetMatrix( int **value, int *rows, int *cols);
 
 int main(){
-    int *data;
-    int m, n;
+    int *data;      // pointer สำหรับเเก็บข้อมูลเมทริก
+    int totalRows;  // จำนวนแถว
+    int totalCols;  // จำนวนคอลัมน์
 
-    GetMatrix(&data, &m, &n);
+    // เรียกฟังก์ชันเพื่อรับค่าเมทริก
+    GetMatrix(&data, &totalCols, &totalRows);
 
     return 0;
 }
 
-void GetMatrix(int **value, int *rows, int *cols){
-    int *var;
+//ฟังก์ชัน
 
+void GetMatrix(int **value, int *numRows, int *numCols){
+    int *varlueMatrix;  // ตัวแปรสำหรับเก็บข้อมูลเมทริก
+
+    // รับจำนวนแถวและตอลัมน์จากผู่ใช้
     printf("enter rows, cols : ");
-    scanf("%d %d", rows, cols);
+    scanf("%d %d", numRows, numCols);
 
-    var = new int[ *rows * *cols];
+    // จองหน่วยความจำสำหรับเมทริก
+    varlueMatrix = new int[ *numRows * *numCols];
 
-    for(int i = 0; i < *rows; i++){
-        for(int j = 0; j < *cols; j++){
-            printf("value[%d][%d] = ", i, j);
-            scanf("%d", &var[ i * * cols + j]);
+    // รับค่าของแต่ละสมาชิกในเมทริก
+    for(int rowindex = 0; rowindex < *numRows; rowindex++){
+        for(int colIndex = 0; colIndex < *numRows; colIndex++){
+            printf("value[%d][%d] = ", rowindex, colIndex);
+            scanf("%d", &varlueMatrix[ rowindex * * numCols + colIndex]);
         }
     }
-    *value = var;
+
+    *value = varlueMatrix;
 }
