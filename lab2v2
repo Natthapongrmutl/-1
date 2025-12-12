@@ -1,39 +1,20 @@
 #include <stdio.h>
 #include <string.h>
 
-// กลับลำดับตัวอักษรในสตริง
-// str1: สตริงนำเข้าที่จะกลับลำดับ
-// str2: บัฟเฟอร์ผลลัพธ์สำหรับสตริงที่กลับลำดับ
-void reverse(char str1[], char str2[])
-{
+void reverse(char str1[], char str2[]){
     int len = strlen(str1);
-    
-    // คัดลอกตัวอักษรจาก str1 ในลำดับย้อนกลับไปยัง str2
-    for(int i = 0; i < len; i++)
-    {
+    for(int i = 0; i < len; i++){
         str2[i] = str1[len - 1 - i];
     }
-    
-    // สิ้นสุดสตริงที่กลับลำดับ
     str2[len] = '\0';
 }
 
-int main()
-{
+int main(){
     char word[100];
     char reversedWord[100];
-    
     printf("Enter a word: ");
-    
-    // ใช้การรับข้อมูลที่ปลอดภัยมากขึ้นโดยจำกัดขนาดเพื่อป้องกันการล้นบัฟเฟอร์
-    if(scanf("%99s", word) != 1)
-    {
-        printf("Error reading input\n");
-        return 1;
-    }
-    
+    scanf("%s", word);
     reverse(word, reversedWord);
     printf("Reversed word: %s\n", reversedWord);
-    
     return 0;
 }
