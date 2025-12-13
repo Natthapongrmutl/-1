@@ -1,0 +1,34 @@
+#include <stdio.h>
+
+int main() {
+    int n;
+    double unitPrice, quantity, itemTotal, discount, grandTotal = 0.0;
+    
+    printf("Enter total number: ");
+    scanf("%d", &n);
+    
+    for (int i = 0; i < n; i++) {
+        printf("\nItem %d:\n", i + 1);
+        printf("Enter unit price: ");
+        scanf("%lf", &unitPrice);
+        printf("Enter quantity: ");
+        scanf("%lf", &quantity);
+        
+        itemTotal = unitPrice * quantity;
+        
+        if (unitPrice >= 1000.00) {
+            discount = itemTotal * 0.10;
+            itemTotal -= discount;
+            printf("Discount applied: %.2f THB\n", discount);
+        } else {
+            printf("No discount applied\n");
+        }
+        
+        printf("Item total after discount: %.2f THB\n", itemTotal);
+        grandTotal += itemTotal;
+    }
+    
+    printf("Grand Total: %.2f THB\n", grandTotal);
+    
+    return 0;
+}
