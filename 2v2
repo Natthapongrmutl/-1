@@ -2,7 +2,7 @@
 
 int main() {
     int n;
-    double unitPrice, quantity, itemTotal, discount, grandTotal = 0.0;
+    float unitPrice, quantity, itemTotal, discount, grandTotal = 0.0;
     
     printf("Enter total number: ");
     scanf("%d", &n);
