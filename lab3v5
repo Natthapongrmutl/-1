@@ -1,0 +1,39 @@
+#include <stdio.h>
+
+struct student 
+{
+    char name[20];
+    int age;
+};
+
+struct student (*GetStudent(int *room))[10] {
+    static struct student children[20][10];
+    int i, j;
+
+    /* รับจำนวนห้องเรียน*/
+    printf("enter room number: ");
+    scanf("%d", room);
+
+    /* รับข้อมูลนักเรียนในแต่ละห้อง 10 คน*/
+    for(i = 0; i < *room; i++){
+        printf("Room %d:\n", i+1);
+        for(j = 0; j < 10; j++){
+            printf("Student %d name: ", j+1);
+            scanf("%s", children[i][j].name);
+
+            printf("Student %d age: ", j+1);
+            scanf("%d", &children[i][j].age);
+        }
+    }
+
+    return children; /*ส่ง pointer กลับ*/
+};
+
+int main() {
+    struct student (*children)[10];
+    int group, i, j;
+
+    children = GetStudent(&group);
+
+    return 0;
+}
