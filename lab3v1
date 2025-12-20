@@ -1,0 +1,55 @@
+#include <stdio.h>
+
+struct student {
+    char name[20];
+    int age;
+    char sex;
+    float gpa;
+};
+
+void upgrade(struct student *child) {
+    if (child->sex == 'M' || child->sex == 'm') {
+        child->gpa *= 1.10; // เพิ่ม 10% สำหรับผู้ชาย
+    } else if (child->sex == 'F' || child->sex == 'f') {
+        child->gpa *= 1.20; // เพิ่ม 20% สำหรับผู้หญิง
+    }
+}
+
+int main() {
+    struct student aboy;
+    aboy.sex = 'M';
+    aboy.gpa = 3.00;
+
+    printf("Before upgrade: %.2f\n", aboy.gpa);
+    upgrade(&aboy);
+    printf("After upgrade: %.2f\n", aboy.gpa);
+
+    return 0;
+}#include <stdio.h>
+
+struct student {
+    char name[20];
+    int age;
+    char sex;
+    float gpa;
+};
+
+void upgrade(struct student *child) {
+    if (child->sex == 'M' || child->sex == 'm') {
+        child->gpa *= 1.10; // เพิ่ม 10% สำหรับผู้ชาย
+    } else if (child->sex == 'F' || child->sex == 'f') {
+        child->gpa *= 1.20; // เพิ่ม 20% สำหรับผู้หญิง
+    }
+}
+
+int main() {
+    struct student aboy;
+    aboy.sex = 'M';
+    aboy.gpa = 3.00;
+
+    printf("Before upgrade: %.2f\n", aboy.gpa);
+    upgrade(&aboy);
+    printf("After upgrade: %.2f\n", aboy.gpa);
+
+    return 0;
+}
