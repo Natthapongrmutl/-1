@@ -1,39 +1,44 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-struct student 
-{
-    char name[20];
+struct student {
+    char name[50];
     int age;
 };
 
 struct student (*GetStudent(int *room))[10] {
-    static struct student children[20][10];
     int i, j;
-
-    /* รับจำนวนห้องเรียน*/
-    printf("enter room number: ");
+    printf("Enter number of classrooms: ");
     scanf("%d", room);
 
-    /* รับข้อมูลนักเรียนในแต่ละห้อง 10 คน*/
-    for(i = 0; i < *room; i++){
-        printf("Room %d:\n", i+1);
-        for(j = 0; j < 10; j++){
-            printf("Student %d name: ", j+1);
-            scanf("%s", children[i][j].name);
+    // เก็บข้อมูลนักเรียน
+    struct student (*students)[10] = malloc((*room) * sizeof(struct student[10]));
 
-            printf("Student %d age: ", j+1);
-            scanf("%d", &children[i][j].age);
+    for (i = 0; i < *room; i++) {
+        printf("Classroom %d:\n", i + 1);
+        for (j = 0; j < 10; j++) {
+            printf("  Enter name for student %d: ", j + 1);
+            scanf("%s", students[i][j].name);
+            printf("  Enter age for student %d: ", j + 1);
+            scanf("%d", &students[i][j].age);
         }
     }
-
-    return children; /*ส่ง pointer กลับ*/
-};
+    return students;
+}
 
 int main() {
     struct student (*children)[10];
-    int group, i, j;
-
+    int group;
     children = GetStudent(&group);
 
+    // แสดงข้อมูลนักเรียน
+    for (int i = 0; i < group; i++) {
+        printf("Classroom %d:\n", i + 1);
+        for (int j = 0; j < 10; j++) {
+            printf("  Name: %s, Age: %d\n", children[i][j].name, children[i][j].age);
+        }
+    }
+
+    free(children);
     return 0;
 }
