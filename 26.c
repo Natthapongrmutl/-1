@@ -4,7 +4,6 @@ int main() {
     int N_MONTHS, month, successCount = 0;
     float dailyDeposit, monthlyTotal;
 
-    // อ่านจำนวนเดือน
     if (scanf("%d", &N_MONTHS) != 1) {
         return 1;
     }
@@ -12,14 +11,15 @@ int main() {
     for (month = 1; month <= N_MONTHS; month++) {
         monthlyTotal = 0.0;
 
-        // อ่านเงินฝากรายวันจนกว่าจะป้อน 0.00
         while (1) {
             if (scanf("%f", &dailyDeposit) != 1) {
                 return 1;
             }
+
             if (dailyDeposit == 0.00) {
                 break;
             }
+
             monthlyTotal += dailyDeposit;
         }
 
@@ -31,5 +31,6 @@ int main() {
     }
 
     printf("Success Count: %d\n", successCount);
+
     return 0;
 }
