@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include <ctype.h>
 
 int main() {
+
     char text[101];
     int countUpper = 0;
     int countLower = 0;
@@ -9,20 +9,22 @@ int main() {
     int countOther = 0;
     int i;
 
-    // รับข้อความจากผู้ใช้
     if (fgets(text, sizeof(text), stdin) == NULL) {
         return 1;
     }
 
-    // นับประเภทของตัวอักษร
-    for (i = 0; text[i] != '\0' && text[i] != '\n'; i++) {
-        if (isupper(text[i])) {
+    for (i = 0; text[i] != '\0'; i++) {
+
+        if (text[i] >= 'A' && text[i] <= 'Z') {
             countUpper++;
-        } else if (islower(text[i])) {
+        }
+        else if (text[i] >= 'a' && text[i] <= 'z') {
             countLower++;
-        } else if (isdigit(text[i])) {
+        }
+        else if (text[i] >= '0' && text[i] <= '9') {
             countDigit++;
-        } else {
+        }
+        else {
             countOther++;
         }
     }
@@ -30,7 +32,7 @@ int main() {
     printf("Uppercase: %d\n", countUpper);
     printf("Lowercase: %d\n", countLower);
     printf("Digits: %d\n", countDigit);
-    printf("Special/other: %d\n", countOther);
+    printf("Special/Other: %d\n", countOther);
 
     return 0;
 }
