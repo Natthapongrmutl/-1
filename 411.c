@@ -11,7 +11,6 @@ int main() {
 
     printf("Enter %d integer numbers for the 2x4 matrix:\n", ROWS * COLS);
 
-    /* รับข้อมูลลงใน Array 2 มิติ */
     for (i = 0; i < ROWS; i++) {
         for (j = 0; j < COLS; j++) {
             printf("Enter element for Row %d, Col %d: ", i, j);
