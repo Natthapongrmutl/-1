@@ -7,29 +7,31 @@ struct Student {
 };
 
 int main() {
-    int N;
-    float totalScore = 0, averageScore;
 
-    printf("Enter number of students: ");
-    scanf("%d", &N);
+    int N, i;
+    float totalScore = 0.0;
+    float averageScore;
+
+    if (scanf("%d", &N) != 1 || N <= 0) {
+        return 1;
+    }
 
     struct Student students[N];
 
-    for (int i = 0; i < N; i++) {
-        printf("Enter name of student %d: ", i + 1);
-        scanf(" %[^\n]", students[i].name); // รับชื่อ
-
-        printf("Enter student ID of student %d: ", i + 1);
-        scanf("%d", &students[i].studentId);
-
-        printf("Enter score of student %d: ", i + 1);
-        scanf("%f", &students[i].score);
+    for (i = 0; i < N; i++) {
+        if (scanf("%d %f %49s",
+                  &students[i].studentId,
+                  &students[i].score,
+                  students[i].name) != 3) {
+            return 1;
+        }
 
         totalScore += students[i].score;
     }
 
     averageScore = totalScore / N;
-    printf("Average Score = %.2f\n", averageScore);
+
+    printf("Average Score: %.2f\n", averageScore);
 
     return 0;
 }
