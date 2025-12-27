@@ -7,23 +7,30 @@ struct Student {
 };
 
 int main() {
+
     int N, i;
 
-    // รับจำนวนของนักเรียน
-    if (scanf("%d", &N) != 1) {
+    if (scanf("%d", &N) != 1 || N <= 0) {
         return 1;
     }
 
     struct Student students[N];
 
-    // รับข้อมูลนักเรียน
     for (i = 0; i < N; i++) {
-        scanf("%d %f %s", &students[i].studentId, &students[i].score, students[i].name);
+        if (scanf("%d %f %49s",
+                  &students[i].studentId,
+                  &students[i].score,
+                  students[i].name) != 3) {
+            return 1;
+        }
     }
 
-    // แสดงข้อมูลนักเรียน
+    printf("\n--- STUDENT LIST ---\n");
     for (i = 0; i < N; i++) {
-        printf("ID: %d, Score: %.2f, Name: %s\n", students[i].studentId, students[i].score, students[i].name);
+        printf("Student %d\n", i + 1);
+        printf("ID: %d\n", students[i].studentId);
+        printf("Name: %s\n", students[i].name);
+        printf("Score: %.2f\n\n", students[i].score);
     }
 
     return 0;
