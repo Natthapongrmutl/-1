@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 int main() {
+
     int N_MONTHS, month, successCount = 0;
     float dailyDeposit, monthlyTotal;
 
@@ -9,6 +10,7 @@ int main() {
     }
 
     for (month = 1; month <= N_MONTHS; month++) {
+
         monthlyTotal = 0.0;
 
         while (1) {
@@ -23,11 +25,11 @@ int main() {
             monthlyTotal += dailyDeposit;
         }
 
-        printf("Month %d Total: %.2f\n", month, monthlyTotal);
-
         if (monthlyTotal >= 500.00) {
             successCount++;
         }
+
+        printf("Month %d Total: %.2f\n", month, monthlyTotal);
     }
 
     printf("Success Count: %d\n", successCount);
