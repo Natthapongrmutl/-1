@@ -7,33 +7,17 @@ struct Product {
 };
 
 int main() {
+
     struct Product item;
 
-    printf("Enter product ID: ");
-    scanf("%d", &item.productId);
-
-    printf("Enter product price: ");
-    scanf("%f", &item.price);
-
-    // เลียร์บัฟเฟอร์ก่อนอ่านสตริง
-    while (getchar() != '\n');
-
-    printf("Enter product name: ");
-    fgets(item.name, sizeof(item.name), stdin);
-
-    size_t len = 0;
-    while (item.name[len] != '\0') {
-        if (item.name[len] == '\n') {
-            item.name[len] = '\0';
-            break;
-        }
-        len++;
+    if (scanf("%d %f %49s", &item.productId, &item.price, item.name) != 3) {
+        return 1;
     }
 
-    printf("\nProduct Details:\n");
-    printf("ID: %d\n", item.productId);
+    printf("--- PRODUCT INFORMATION ---\n");
+    printf("Product ID: %d\n", item.productId);
+    printf("Product Name: %s\n", item.name);
     printf("Price: %.2f\n", item.price);
-    printf("Name: %s\n", item.name);
 
     return 0;
 }
