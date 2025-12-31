@@ -1,39 +1,45 @@
 #include <stdio.h>
 
+float calculate_net_damage(int attackerLevel, int opponentArmor) {
+
+    float baseAttack = attackerLevel * 10.0;
+    float reduction;
+
+    if (opponentArmor < 50) {
+        reduction = 0.20;
+    } else {
+        reduction = 0.40;
+    }
+
+    return baseAttack * (1.0 - reduction);
+}
+
 int main() {
 
-    int N_CALCULATIONS, i;
+    int N;
     int attkLvl, oppLvl, oppArmor;
-
-    float baseAttack, damageReduction, netDamage, damageDeficit;
+    float netDamage;
+    float deficit;
 
     const float WORTH_THRESHOLD = 150.0;
 
-    if (scanf("%d", &N_CALCULATIONS) != 1) {
+    if (scanf("%d", &N) != 1) {
         return 1;
     }
 
-    for (i = 0; i < N_CALCULATIONS; i++) {
+    for (int i = 0; i < N; i++) {
 
         if (scanf("%d %d %d", &attkLvl, &oppLvl, &oppArmor) != 3) {
             break;
         }
 
-        baseAttack = attkLvl * 10.0;
-
-        if (oppArmor < 50) {
-            damageReduction = 0.20;
-        } else {
-            damageReduction = 0.40;
-        }
-
-        netDamage = baseAttack * (1.0 - damageReduction);
+        netDamage = calculate_net_damage(attkLvl, oppArmor);
 
         if (netDamage >= WORTH_THRESHOLD) {
             printf("SUCCESS! Net Damage: %.2f\n", netDamage);
         } else {
-            damageDeficit = WORTH_THRESHOLD - netDamage;
-            printf("FAIL. Deficit: %.2f\n", damageDeficit);
+            deficit = WORTH_THRESHOLD - netDamage;
+            printf("FAIL. Deficit: %.2f\n", deficit);
         }
     }
 
