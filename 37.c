@@ -6,9 +6,28 @@ struct SalesRecord {
     float actual;
 };
 
+float calculate_commission(float target, float actual) {
+
+    float commission;
+
+    commission = actual * 0.10;
+
+    if (actual >= target * 1.20) {
+        commission += 200.0;   // Tier 2 bonus
+    }
+    else if (actual >= target) {
+        commission += 50.0;    // Tier 1 bonus
+    }
+    else if (actual < target * 0.90) {
+        commission -= 100.0;   // Penalty
+    }
+
+    return commission;
+}
+
 int main() {
 
-    int N, i;
+    int N;
     float grandTotalCommission = 0.0;
 
     if (scanf("%d", &N) != 1 || N <= 0) {
@@ -17,9 +36,7 @@ int main() {
 
     struct SalesRecord records[N];
 
-    for (i = 0; i < N; i++) {
-
-        float baseCommission;
+    for (int i = 0; i < N; i++) {
 
         if (scanf("%f %f %s",
                   &records[i].target,
@@ -27,18 +44,9 @@ int main() {
                   records[i].name) != 3) {
             return 1;
         }
-
-        baseCommission = records[i].actual * 0.10;
-
-        if (records[i].actual >= records[i].target * 1.20) {
-            baseCommission += 200.0;
-        } else if (records[i].actual >= records[i].target) {
-            baseCommission += 50.0;
-        } else if (records[i].actual < records[i].target * 0.90) {
-            baseCommission -= 100.0;
-        }
-
-        grandTotalCommission += baseCommission;
+        grandTotalCommission +=
+            calculate_commission(records[i].target,
+                                  records[i].actual);
     }
 
     printf("Grand Total Commission: %.2f\n", grandTotalCommission);
