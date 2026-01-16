@@ -11,14 +11,50 @@ struct studentNode {
     struct studentNode *back;
 };
 
+struct studentNode* AddNode(struct studentNode **start,
+                            char *name, int age, char sex, float gpa);
+void InsNode(struct studentNode *now,
+             char *name, int age, char sex, float gpa);
+void GoBack(struct studentNode **now);
+void DelNode(struct studentNode **start, struct studentNode **now);
 void ShowAll(struct studentNode *walk);
 
-struct studentNode* AddNode(struct studentNode **start,
-                            char *name, int age, char sex, float gpa)
-{
-    struct studentNode *newNode, *walk;
+int main() {
+    struct studentNode *start = NULL;
+    struct studentNode *now = NULL;
 
-    newNode = (struct studentNode*)malloc(sizeof(struct studentNode));
+    now = AddNode(&start, "one", 6, 'M', 3.11);
+    ShowAll(start);
+
+    now = AddNode(&start, "two", 8, 'F', 3.22);
+    ShowAll(start);
+
+    InsNode(now, "three", 10, 'M', 3.33);
+    ShowAll(start);
+
+    InsNode(now, "four", 12, 'F', 3.44);
+    ShowAll(start);
+
+    GoBack(&now);
+
+    DelNode(&start, &now);
+    ShowAll(start);
+
+    DelNode(&start, &now);
+    ShowAll(start);
+
+    DelNode(&start, &now);
+    ShowAll(start);
+
+    return 0;
+}
+
+struct studentNode* AddNode(struct studentNode **start,
+                            char *name, int age, char sex, float gpa) {
+
+    struct studentNode *newNode =
+        (struct studentNode*)malloc(sizeof(struct studentNode));
+
     strcpy(newNode->name, name);
     newNode->age = age;
     newNode->sex = sex;
@@ -31,7 +67,7 @@ struct studentNode* AddNode(struct studentNode **start,
         return newNode;
     }
 
-    walk = *start;
+    struct studentNode *walk = *start;
     while (walk->next != NULL) {
         walk = walk->next;
     }
@@ -42,69 +78,57 @@ struct studentNode* AddNode(struct studentNode **start,
     return newNode;
 }
 
-void InsNode(struct studentNode **start, struct studentNode *now,
-             char *name, int age, char sex, float gpa)
-{
-    struct studentNode *newNode;
+void InsNode(struct studentNode *now,
+             char *name, int age, char sex, float gpa) {
 
     if (now == NULL) return;
 
-    newNode = (struct studentNode*)malloc(sizeof(struct studentNode));
+    struct studentNode *newNode =
+        (struct studentNode*)malloc(sizeof(struct studentNode));
+
     strcpy(newNode->name, name);
     newNode->age = age;
     newNode->sex = sex;
     newNode->gpa = gpa;
 
-    if (now->back == NULL) {
-        newNode->next = now;
-        newNode->back = NULL;
-        now->back = newNode;
-        *start = newNode;
-    } 
-    else {
-        newNode->next = now;
-        newNode->back = now->back;
+    newNode->next = now;
+    newNode->back = now->back;
+
+    if (now->back != NULL) {
         now->back->next = newNode;
-        now->back = newNode;
     }
+
+    now->back = newNode;
 }
 
-void GoBack(struct studentNode **now)
-{
+void GoBack(struct studentNode **now) {
     if (*now != NULL && (*now)->back != NULL) {
         *now = (*now)->back;
     }
 }
 
-void DelNode(struct studentNode **start, struct studentNode **now)
-{
-    struct studentNode *temp;
-
+void DelNode(struct studentNode **start, struct studentNode **now) {
     if (*now == NULL) return;
 
-    temp = *now;
+    struct studentNode *temp = *now;
 
-    if (temp->back == NULL) {
-        *start = temp->next;
-        if (*start != NULL)
-            (*start)->back = NULL;
-        *now = *start;
-    }
-    else if (temp->next == NULL) {
-        temp->back->next = NULL;
-        *now = temp->back;
-    }
-    else {
+    if (temp->back != NULL) {
         temp->back->next = temp->next;
+    } else {
+        *start = temp->next;
+    }
+
+    if (temp->next != NULL) {
         temp->next->back = temp->back;
         *now = temp->next;
+    } else {
+        *now = temp->back;
     }
 
     free(temp);
 }
 
-void ShowAll(struct studentNode *walk)
-{
+void ShowAll(struct studentNode *walk) {
     while (walk != NULL) {
         printf("%s ", walk->name);
         walk = walk->next;
