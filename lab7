@@ -2,121 +2,199 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct studentNode {
+typedef struct StudentNode {
     char name[20];
     int age;
     char sex;
     float gpa;
-    struct studentNode *next;
-};
+    struct StudentNode *next;
+} StudentNode;
 
-void InsNode(struct studentNode **start, struct studentNode **now,
-             char n[], int a, char s, float g)
+
+/* ---------- Utility: Create Node ---------- */
+StudentNode *createNode(const char *name,
+                        int age,
+                        char sex,
+                        float gpa)
 {
-    struct studentNode *newNode =
-        (struct studentNode*)malloc(sizeof(struct studentNode));
+    StudentNode *node = malloc(sizeof(StudentNode));
 
-    strcpy(newNode->name, n);
-    newNode->age = a;
-    newNode->sex = s;
-    newNode->gpa = g;
-    newNode->next = NULL;
+    if (node == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
 
-    if (*start == NULL) {
-        *start = *now = newNode;
-    } else {
-        newNode->next = *start;
-        *start = newNode;
+    strcpy(node->name, name);
+    node->age = age;
+    node->sex = sex;
+    node->gpa = gpa;
+    node->next = NULL;
+
+    return node;
+}
+
+
+/* ---------- Insert at head ---------- */
+void insertHead(StudentNode **head,
+                StudentNode **current,
+                const char *name,
+                int age,
+                char sex,
+                float gpa)
+{
+    StudentNode *node = createNode(name, age, sex, gpa);
+
+    node->next = *head;
+    *head = node;
+
+    if (*current == NULL) {
+        *current = node;
     }
 }
 
-void InsertNode(struct studentNode **start, struct studentNode **now,
-                char n[], int a, char s, float g)
+
+/* ---------- Move to next node ---------- */
+void moveNext(StudentNode **current)
 {
-    struct studentNode *newNode =
-        (struct studentNode*)malloc(sizeof(struct studentNode));
-
-    strcpy(newNode->name, n);
-    newNode->age = a;
-    newNode->sex = s;
-    newNode->gpa = g;
-    newNode->next = NULL;
-
-    if (*start == NULL) {
-        *start = *now = newNode;
-    } else {
-        newNode->next = *start;
-        *start = newNode;
+    if (*current == NULL) {
+        return;
     }
+
+    if ((*current)->next == NULL) {
+        return;
+    }
+
+    *current = (*current)->next;
 }
 
-void GoNext(struct studentNode **now)
+
+/* ---------- Delete current node ---------- */
+void deleteCurrent(StudentNode **head,
+                   StudentNode **current)
 {
-    if (*now != NULL && (*now)->next != NULL)
-        *now = (*now)->next;
+    if (*head == NULL) {
+        return;
+    }
+
+    if (*current == NULL) {
+        return;
+    }
+
+    StudentNode *target = *current;
+
+    if (*head == target) {
+        *head = target->next;
+        *current = *head;
+        free(target);
+        return;
+    }
+
+    StudentNode *previous = *head;
+
+    while (previous->next != NULL &&
+           previous->next != target)
+    {
+        previous = previous->next;
+    }
+
+    if (previous->next == NULL) {
+        return;
+    }
+
+    previous->next = target->next;
+    *current = target->next;
+
+    free(target);
 }
 
-void DelNode(struct studentNode **start, struct studentNode **now)
+
+/* ---------- Print current node ---------- */
+void printNode(const StudentNode *node)
 {
-    struct studentNode *temp, *walk;
+    if (node == NULL) {
+        return;
+    }
 
-    if (*start == NULL) return;
+    printf("%s %d %c %.2f\n",
+           node->name,
+           node->age,
+           node->sex,
+           node->gpa);
+}
 
-    if (*start == *now) {
-        temp = *start;
-        *start = (*start)->next;
-        *now = *start;
+
+/* ---------- Print first two nodes safely ---------- */
+void printFirstTwo(const StudentNode *head)
+{
+    if (head == NULL) {
+        return;
+    }
+
+    if (head->next == NULL) {
+        return;
+    }
+
+    printf("%s %s\n",
+           head->name,
+           head->next->name);
+}
+
+
+/* ---------- Free entire list ---------- */
+void freeList(StudentNode **head)
+{
+    while (*head != NULL) {
+        StudentNode *temp = *head;
+        *head = (*head)->next;
         free(temp);
-    } else {
-        walk = *start;
-        while (walk->next != *now)
-            walk = walk->next;
-
-        temp = *now;
-        walk->next = (*now)->next;
-        *now = walk->next;
-        free(temp);
     }
 }
 
-void ShowNode(struct studentNode *now)
+
+/* ================= MAIN ================= */
+int main(void)
 {
-    if (now != NULL)
-        printf("%s %d %c %.2f\n",
-               now->name, now->age,
-               now->sex, now->gpa);
-}
+    StudentNode *listA_head = NULL;
+    StudentNode *listA_current = NULL;
 
+    StudentNode *listB_head = NULL;
+    StudentNode *listB_current = NULL;
 
-int main()
-{
-    struct studentNode *listA_start=NULL, *listA_now=NULL;
-    struct studentNode *listB_start=NULL, *listB_now=NULL;
-    struct studentNode *listC_start=NULL, *listC_now=NULL;
+    StudentNode *listC_head = NULL;
+    StudentNode *listC_current = NULL;
 
-    InsNode(&listA_start,&listA_now,"one",1,'A',1.1);
-    InsNode(&listA_start,&listA_now,"two",2,'B',2.2);
-    InsNode(&listA_start,&listA_now,"three",3,'C',3.3);
-    GoNext(&listA_now);
-    ShowNode(listA_now);
+    /* List A */
+    insertHead(&listA_head, &listA_current, "one", 1, 'A', 1.1f);
+    insertHead(&listA_head, &listA_current, "two", 2, 'B', 2.2f);
+    insertHead(&listA_head, &listA_current, "three", 3, 'C', 3.3f);
 
-    InsertNode(&listB_start,&listB_now,"four",4,'D',4.4);
-    InsertNode(&listB_start,&listB_now,"five",5,'E',5.5);
-    InsertNode(&listB_start,&listB_now,"six",6,'F',6.6);
-    GoNext(&listB_now);
-    DelNode(&listB_start,&listB_now);
-    printf("%s %s\n", listB_start->name,
-                      listB_start->next->name);
+    moveNext(&listA_current);
+    printNode(listA_current);
 
-    listC_start = listA_start;
-    listC_now   = listC_start;
-    GoNext(&listC_now);
-    ShowNode(listC_now);
+    /* List B */
+    insertHead(&listB_head, &listB_current, "four", 4, 'D', 4.4f);
+    insertHead(&listB_head, &listB_current, "five", 5, 'E', 5.5f);
+    insertHead(&listB_head, &listB_current, "six", 6, 'F', 6.6f);
 
-    listC_start = listB_start;
-    listC_now   = listC_start;
-    printf("%s %s\n", listC_start->name,
-                      listC_start->next->name);
+    moveNext(&listB_current);
+    deleteCurrent(&listB_head, &listB_current);
+    printFirstTwo(listB_head);
+
+    /* List C references A */
+    listC_head = listA_head;
+    listC_current = listC_head;
+
+    moveNext(&listC_current);
+    printNode(listC_current);
+
+    /* List C references B */
+    listC_head = listB_head;
+    listC_current = listC_head;
+
+    printFirstTwo(listC_head);
+
+    freeList(&listA_head);
+    freeList(&listB_head);
 
     return 0;
 }
