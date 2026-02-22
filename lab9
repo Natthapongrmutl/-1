@@ -2,219 +2,322 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct studentNode {
+/*
+    ข้อมูลนักเรียนที่เก็บใน linked list
+*/
+struct StudentNode {
     char name[20];
     int age;
-    char sex;
+    char gender;
     float gpa;
-    struct studentNode *next;
+    struct StudentNode* next;
 };
 
 class LinkedList {
 private:
-    struct studentNode *start;
+    StudentNode* head;
 
 public:
     LinkedList() {
-        start = NULL;
+        head = NULL;
     }
 
     ~LinkedList() {
-        while(start != NULL) {
-            struct studentNode *temp = start;
-            start = start->next;
+        StudentNode* current = head;
+
+        while (current != NULL) {
+            StudentNode* temp = current;
+            current = current->next;
             delete temp;
         }
     }
 
-    void InsNode(char n[], int a, char s, float g) {
-        struct studentNode *newNode = new studentNode;
-        strcpy(newNode->name, n);
-        newNode->age = a;
-        newNode->sex = s;
-        newNode->gpa = g;
-        newNode->next = start;
-        start = newNode;
+    // เพิ่มข้อมูลนักเรียนใหม่เข้าไปใน linked list
+    void insertStudent(char studentName[], int studentAge, char studentGender, float studentGPA) {
+
+        StudentNode* newNode = new StudentNode;
+
+        strcpy(newNode->name, studentName);
+        newNode->age = studentAge;
+        newNode->gender = studentGender;
+        newNode->gpa = studentGPA;
+
+        newNode->next = head;
+        head = newNode;
     }
 
-    struct studentNode* FindNode(char n[]) {
-        struct studentNode *temp = start;
-        while(temp != NULL) {
-            if(strcmp(temp->name, n) == 0)
-                return temp;
-            temp = temp->next;
+    // หา StudentNode โดยค้นหาจากชื่อ
+    StudentNode* findStudent(char studentName[]) {
+
+        StudentNode* current = head;
+
+        while (current != NULL) {
+
+            if (strcmp(current->name, studentName) == 0) {
+                return current;
+            }
+
+            current = current->next;
         }
+
         return NULL;
     }
 
-    void DelNode(char n[]) {
-        struct studentNode *temp = start;
-        struct studentNode *prev = NULL;
+    // ลบข้อมูลนักเรียน โดยค้นหาจากชื่อ
+    void deleteStudent(char studentName[]) {
 
-        while(temp != NULL) {
-            if(strcmp(temp->name, n) == 0) {
-                if(prev == NULL)
-                    start = temp->next;
-                else
-                    prev->next = temp->next;
+        StudentNode* current = head;
+        StudentNode* previous = NULL;
 
-                delete temp;
-                printf("Deleted Successfully\n");
+        while (current != NULL) {
+
+            if (strcmp(current->name, studentName) == 0) {
+
+                if (previous == NULL) {
+                    head = current->next;
+                }
+                else {
+                    previous->next = current->next;
+                }
+
+                delete current;
+                printf("Delete successful.\n");
                 return;
             }
-            prev = temp;
-            temp = temp->next;
+
+            previous = current;
+            current = current->next;
         }
-        printf("Not Found\n");
+
+        printf("Student not found.\n");
     }
 
-    void EditNode(char n[], int a, char s, float g) {
-        struct studentNode *temp = FindNode(n);
-        if(temp != NULL) {
-            temp->age = a;
-            temp->sex = s;
-            temp->gpa = g;
-            printf("Updated Successfully\n");
-        } else {
-            printf("Not Found\n");
+    // แก้ไขข้อมูลนักเรียนที่มีอยู่แล้ว โดยค้นหาจากชื่อ
+    void editStudent(char studentName[], int newAge, char newGender, float newGPA) {
+
+        StudentNode* target = findStudent(studentName);
+
+        if (target == NULL) {
+            printf("Student not found.\n");
+            return;
+        }
+
+        target->age = newAge;
+        target->gender = newGender;
+        target->gpa = newGPA;
+
+        printf("Update successful.\n");
+    }
+
+    // แสดงข้อมูลทั้งหมดใน linked list
+    void displayAll() {
+
+        StudentNode* current = head;
+
+        if (current == NULL) {
+            printf("No data available.\n");
+            return;
+        }
+
+        while (current != NULL) {
+
+            printf("Name: %s | Age: %d | Gender: %c | GPA: %.2f\n",
+                   current->name,
+                   current->age,
+                   current->gender,
+                   current->gpa);
+
+            current = current->next;
         }
     }
 
-    void ShowAll() {
-        struct studentNode *temp = start;
-        while(temp != NULL) {
-            printf("Name: %s | Age: %d | Sex: %c | GPA: %.2f\n",
-                   temp->name, temp->age, temp->sex, temp->gpa);
-            temp = temp->next;
-        }
-    }
-
-    struct studentNode* getStart() {
-        return start;
+    StudentNode* getHead() {
+        return head;
     }
 };
 
-void AddData(LinkedList *list) {
-    char name[20];
-    int age;
-    char sex;
-    float gpa;
+/*
+    อ่านข้อมูลจากไฟล์แบบ binary และสร้าง linked list ในหน่วยความจำ
+*/
+void readFromFile(LinkedList* list) {
 
-    printf("Enter Name: ");
-    scanf("%s", name);
-    printf("Enter Age: ");
-    scanf("%d", &age);
-    printf("Enter Sex (M/F): ");
-    scanf(" %c", &sex);
-    printf("Enter GPA: ");
-    scanf("%f", &gpa);
+    FILE* filePointer = fopen("student.dat", "rb");
 
-    list->InsNode(name, age, sex, gpa);
+    if (filePointer == NULL) {
+        return;
+    }
+
+    StudentNode temp;
+
+    while (fread(&temp, sizeof(StudentNode), 1, filePointer) == 1) {
+
+        list->insertStudent(
+            temp.name,
+            temp.age,
+            temp.gender,
+            temp.gpa
+        );
+    }
+
+    fclose(filePointer);
 }
 
-void EditData(LinkedList *list) {
-    char name[20];
-    int age;
-    char sex;
-    float gpa;
+/*
+   เขียนข้อมูลจาก linked list ลงไฟล์แบบ binary
+*/
+void writeToFile(LinkedList* list) {
+
+    FILE* filePointer = fopen("student.dat", "wb");
+
+    if (filePointer == NULL) {
+        printf("Error opening file for writing.\n");
+        return;
+    }
+
+    StudentNode* current = list->getHead();
+
+    while (current != NULL) {
+
+        fwrite(current, sizeof(StudentNode), 1, filePointer);
+
+        current = current->next;
+    }
+
+    fclose(filePointer);
+}
+
+void addStudentData(LinkedList* list) {
+
+    char studentName[20];
+    int studentAge;
+    char studentGender;
+    float studentGPA;
+
+    printf("Enter name: ");
+    scanf("%s", studentName);
+
+    printf("Enter age: ");
+    scanf("%d", &studentAge);
+
+    printf("Enter gender (M/F): ");
+    scanf(" %c", &studentGender);
+
+    printf("Enter GPA: ");
+    scanf("%f", &studentGPA);
+
+    list->insertStudent(
+        studentName,
+        studentAge,
+        studentGender,
+        studentGPA
+    );
+}
+
+void editStudentData(LinkedList* list) {
+
+    char studentName[20];
+    int newAge;
+    char newGender;
+    float newGPA;
 
     printf("Enter name to edit: ");
-    scanf("%s", name);
+    scanf("%s", studentName);
 
-    printf("Enter new Age: ");
-    scanf("%d", &age);
-    printf("Enter new Sex: ");
-    scanf(" %c", &sex);
+    printf("Enter new age: ");
+    scanf("%d", &newAge);
+
+    printf("Enter new gender (M/F): ");
+    scanf(" %c", &newGender);
+
     printf("Enter new GPA: ");
-    scanf("%f", &gpa);
+    scanf("%f", &newGPA);
 
-    list->EditNode(name, age, sex, gpa);
+    list->editStudent(
+        studentName,
+        newAge,
+        newGender,
+        newGPA
+    );
 }
 
-void FindData(LinkedList *list) {
-    char name[20];
-    printf("Enter name to find: ");
-    scanf("%s", name);
+void findStudentData(LinkedList* list) {
 
-    struct studentNode *s = list->FindNode(name);
-    if(s != NULL) {
-        printf("Found -> Name: %s | Age: %d | Sex: %c | GPA: %.2f\n",
-               s->name, s->age, s->sex, s->gpa);
-    } else {
-        printf("Not Found\n");
-    }
-}
+    char studentName[20];
 
-void readfile(LinkedList *list) {
-    FILE *fp = fopen("student.dat", "rb");
-    if(fp == NULL) return;
+    printf("Enter name to search: ");
+    scanf("%s", studentName);
 
-    struct studentNode temp;
+    StudentNode* result = list->findStudent(studentName);
 
-    while(fread(&temp, sizeof(struct studentNode), 1, fp)) {
-        list->InsNode(temp.name, temp.age, temp.sex, temp.gpa);
+    if (result == NULL) {
+        printf("Student not found.\n");
+        return;
     }
 
-    fclose(fp);
-}
-
-void writefile(LinkedList *list) {
-    FILE *fp = fopen("student.dat", "wb");
-    if(fp == NULL) return;
-
-    struct studentNode *temp = list->getStart();
-
-    while(temp != NULL) {
-        fwrite(temp, sizeof(struct studentNode), 1, fp);
-        temp = temp->next;
-    }
-
-    fclose(fp);
+    printf("Found: Name=%s Age=%d Gender=%c GPA=%.2f\n",
+           result->name,
+           result->age,
+           result->gender,
+           result->gpa);
 }
 
 int main() {
-    LinkedList listA;
-    int menu;
-    char name[20];
 
-    readfile(&listA);
+    LinkedList studentList;
+    int menuChoice;
 
-    printf("\nMenu (1) Add (2) Edit (3) Delete (4) Find (5) Show (0) Exit : ");
-    scanf("%d", &menu);
+    readFromFile(&studentList);
 
-    while(menu != 0) {
+    do {
 
-        switch(menu) {
+        printf("\nMenu\n");
+        printf("1. Add\n");
+        printf("2. Edit\n");
+        printf("3. Delete\n");
+        printf("4. Find\n");
+        printf("5. Show All\n");
+        printf("0. Exit\n");
+        printf("Select: ");
+
+        scanf("%d", &menuChoice);
+
+        switch (menuChoice) {
+
             case 1:
-                AddData(&listA);
+                addStudentData(&studentList);
                 break;
 
             case 2:
-                EditData(&listA);
+                editStudentData(&studentList);
                 break;
 
-            case 3:
+            case 3: {
+                char studentName[20];
                 printf("Enter name to delete: ");
-                scanf("%s", name);
-                listA.DelNode(name);
+                scanf("%s", studentName);
+                studentList.deleteStudent(studentName);
                 break;
+            }
 
             case 4:
-                FindData(&listA);
+                findStudentData(&studentList);
                 break;
 
             case 5:
-                listA.ShowAll();
+                studentList.displayAll();
+                break;
+
+            case 0:
+                printf("Exiting program...\n");
                 break;
 
             default:
-                printf("Invalid Menu\n");
+                printf("Invalid choice.\n");
         }
 
-        printf("\nMenu (1) Add (2) Edit (3) Delete (4) Find (5) Show (0) Exit : ");
-        scanf("%d", &menu);
-    }
+    } while (menuChoice != 0);
 
-    writefile(&listA);
+    writeToFile(&studentList);
+
     return 0;
 }
