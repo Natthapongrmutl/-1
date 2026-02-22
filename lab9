@@ -1,0 +1,220 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct studentNode {
+    char name[20];
+    int age;
+    char sex;
+    float gpa;
+    struct studentNode *next;
+};
+
+class LinkedList {
+private:
+    struct studentNode *start;
+
+public:
+    LinkedList() {
+        start = NULL;
+    }
+
+    ~LinkedList() {
+        while(start != NULL) {
+            struct studentNode *temp = start;
+            start = start->next;
+            delete temp;
+        }
+    }
+
+    void InsNode(char n[], int a, char s, float g) {
+        struct studentNode *newNode = new studentNode;
+        strcpy(newNode->name, n);
+        newNode->age = a;
+        newNode->sex = s;
+        newNode->gpa = g;
+        newNode->next = start;
+        start = newNode;
+    }
+
+    struct studentNode* FindNode(char n[]) {
+        struct studentNode *temp = start;
+        while(temp != NULL) {
+            if(strcmp(temp->name, n) == 0)
+                return temp;
+            temp = temp->next;
+        }
+        return NULL;
+    }
+
+    void DelNode(char n[]) {
+        struct studentNode *temp = start;
+        struct studentNode *prev = NULL;
+
+        while(temp != NULL) {
+            if(strcmp(temp->name, n) == 0) {
+                if(prev == NULL)
+                    start = temp->next;
+                else
+                    prev->next = temp->next;
+
+                delete temp;
+                printf("Deleted Successfully\n");
+                return;
+            }
+            prev = temp;
+            temp = temp->next;
+        }
+        printf("Not Found\n");
+    }
+
+    void EditNode(char n[], int a, char s, float g) {
+        struct studentNode *temp = FindNode(n);
+        if(temp != NULL) {
+            temp->age = a;
+            temp->sex = s;
+            temp->gpa = g;
+            printf("Updated Successfully\n");
+        } else {
+            printf("Not Found\n");
+        }
+    }
+
+    void ShowAll() {
+        struct studentNode *temp = start;
+        while(temp != NULL) {
+            printf("Name: %s | Age: %d | Sex: %c | GPA: %.2f\n",
+                   temp->name, temp->age, temp->sex, temp->gpa);
+            temp = temp->next;
+        }
+    }
+
+    struct studentNode* getStart() {
+        return start;
+    }
+};
+
+void AddData(LinkedList *list) {
+    char name[20];
+    int age;
+    char sex;
+    float gpa;
+
+    printf("Enter Name: ");
+    scanf("%s", name);
+    printf("Enter Age: ");
+    scanf("%d", &age);
+    printf("Enter Sex (M/F): ");
+    scanf(" %c", &sex);
+    printf("Enter GPA: ");
+    scanf("%f", &gpa);
+
+    list->InsNode(name, age, sex, gpa);
+}
+
+void EditData(LinkedList *list) {
+    char name[20];
+    int age;
+    char sex;
+    float gpa;
+
+    printf("Enter name to edit: ");
+    scanf("%s", name);
+
+    printf("Enter new Age: ");
+    scanf("%d", &age);
+    printf("Enter new Sex: ");
+    scanf(" %c", &sex);
+    printf("Enter new GPA: ");
+    scanf("%f", &gpa);
+
+    list->EditNode(name, age, sex, gpa);
+}
+
+void FindData(LinkedList *list) {
+    char name[20];
+    printf("Enter name to find: ");
+    scanf("%s", name);
+
+    struct studentNode *s = list->FindNode(name);
+    if(s != NULL) {
+        printf("Found -> Name: %s | Age: %d | Sex: %c | GPA: %.2f\n",
+               s->name, s->age, s->sex, s->gpa);
+    } else {
+        printf("Not Found\n");
+    }
+}
+
+void readfile(LinkedList *list) {
+    FILE *fp = fopen("student.dat", "rb");
+    if(fp == NULL) return;
+
+    struct studentNode temp;
+
+    while(fread(&temp, sizeof(struct studentNode), 1, fp)) {
+        list->InsNode(temp.name, temp.age, temp.sex, temp.gpa);
+    }
+
+    fclose(fp);
+}
+
+void writefile(LinkedList *list) {
+    FILE *fp = fopen("student.dat", "wb");
+    if(fp == NULL) return;
+
+    struct studentNode *temp = list->getStart();
+
+    while(temp != NULL) {
+        fwrite(temp, sizeof(struct studentNode), 1, fp);
+        temp = temp->next;
+    }
+
+    fclose(fp);
+}
+
+int main() {
+    LinkedList listA;
+    int menu;
+    char name[20];
+
+    readfile(&listA);
+
+    printf("\nMenu (1) Add (2) Edit (3) Delete (4) Find (5) Show (0) Exit : ");
+    scanf("%d", &menu);
+
+    while(menu != 0) {
+
+        switch(menu) {
+            case 1:
+                AddData(&listA);
+                break;
+
+            case 2:
+                EditData(&listA);
+                break;
+
+            case 3:
+                printf("Enter name to delete: ");
+                scanf("%s", name);
+                listA.DelNode(name);
+                break;
+
+            case 4:
+                FindData(&listA);
+                break;
+
+            case 5:
+                listA.ShowAll();
+                break;
+
+            default:
+                printf("Invalid Menu\n");
+        }
+
+        printf("\nMenu (1) Add (2) Edit (3) Delete (4) Find (5) Show (0) Exit : ");
+        scanf("%d", &menu);
+    }
+
+    writefile(&listA);
+    return 0;
+}
