@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int *Dijkstra(int *L, int n);
+
+int main() {
+
+    int n = 5, i, j;
+    int *d, *g;
+
+    g = new int[n*n];
+
+    for(i = 0; i < n; i++)
+        for(j = 0; j < n; j++)
+            g[i*n + j] = -1;
+
+    g[0*n + 1] = 100;
+    g[0*n + 2] = 80;
+    g[0*n + 3] = 30;
+    g[0*n + 4] = 10;
+
+    g[1*n + 2] = 20;
+
+    g[3*n + 1] = 20;
+    g[3*n + 2] = 20;
+
+    g[4*n + 3] = 10;
+
+    d = Dijkstra(g, n);
+
+    for(i = 0; i < n-1; i++)
+        printf("%d ", d[i]);
+
+    return 0;
+}
+
+
+int *Dijkstra(int *L, int n)
+{
+    int i, j, k, min;
+    int *d = new int[n];
+    int *visit = new int[n];
+
+    for(i = 0; i < n; i++)
+    {
+        d[i] = -1;
+        visit[i] = 0;
+    }
+
+    d[0] = 0;
+
+    for(i = 0; i < n; i++)
+    {
+        min = -1;
+        k = -1;
+
+        for(j = 0; j < n; j++)
+        {
+            if(!visit[j] && d[j] != -1 && (min == -1 || d[j] < min))
+            {
+                min = d[j];
+                k = j;
+            }
+        }
+
+        if(k == -1) break;
+
+        visit[k] = 1;
+
+        for(j = 0; j < n; j++)
+        {
+            if(L[k*n + j] != -1)
+            {
+                int cost = d[k] + L[k*n + j];
+
+                if(d[j] == -1 || cost < d[j])
+                    d[j] = cost;
+            }
+        }
+    }
+
+    return d;
+}
